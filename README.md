@@ -1,5 +1,5 @@
-wowUnit is a [unit testing][http://en.wikipedia.org/wiki/Unit_testing] framework intended to be used for AddOn development in
-World of Warcraft.
+wowUnit is a [unit testing](http://en.wikipedia.org/wiki/Unit_testing "see Wikipedia")
+framework intended to be used for AddOn development in World of Warcraft.
 
 Example
 =======
@@ -25,3 +25,5 @@ like so:
 		}
 	}
 
+Once tests are written and loaded, you could run these tests in game by typing
+*/test addAddOn*.
