@@ -26,4 +26,36 @@ like so:
 	}
 
 Once tests are written and loaded, you could run these tests in game by typing
-*/test addAddOn*.
+"*/test addAddOn*".
+
+Documentation
+=============
+
+Running Tests
+-------------
+You can easily run unit tests contained in any table directly accessible in the
+global namespace by using any of the following slash-commands:
+
+	/test myAddon
+	/wowunit myOtherAddon
+	/wu testTable
+	/unittest testSuite
+
+If your tests are buried deeper within another table, you'll have to run command
+like so:
+
+	/run wowUnit:StartTests(myAddon.someTable.testSuiteIsHere)
+
+Test Suite Definition
+---------------------
+
+A valid test suite table has the following fields:
+#### title
+(optional) The title of this test suite, diplayed in wowUnit's main window
+#### tests
+A table containing the test categories for this test suite. The keys of any
+entries in this table serve as titles for your categories, while their values
+should be tables containing the actual tests
+
+
+
