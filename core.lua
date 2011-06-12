@@ -348,11 +348,13 @@ function wowUnit:CurrentTestSucceeded(message)
     wowUnit.currentTestSuiteResults.total = wowUnit.currentTestSuiteResults.total + 1;
     wowUnit.currentTestCategoryResults.total = wowUnit.currentTestCategoryResults.total + 1;
     wowUnit.currentTestResults.total = wowUnit.currentTestResults.total + 1;
-    if (message ~= nil) then
-        local currentCategory = wowUnit.currentTests[wowUnit.currentCategoryIndex];
-        local currentTest = currentCategory.tests[wowUnit.currentTestIndex];
 
+    local currentCategory = wowUnit.currentTests[wowUnit.currentCategoryIndex];
+    local currentTest = currentCategory.tests[wowUnit.currentTestIndex];
+    if (message ~= nil) then
         currentTest.result = currentTest.result..POSITIVE.." |cff00ff00"..message.."|r\n";
+    else
+        currentTest.result = currentTest.result..POSITIVE.."\n";
     end
 end
 
@@ -364,11 +366,13 @@ function wowUnit:CurrentTestFailed(message)
     wowUnit.currentTestSuiteResults.total = wowUnit.currentTestSuiteResults.total + 1;
     wowUnit.currentTestCategoryResults.total = wowUnit.currentTestCategoryResults.total + 1;
     wowUnit.currentTestResults.total = wowUnit.currentTestResults.total + 1;
-    if (message ~= nil) then
-        local currentCategory = wowUnit.currentTests[wowUnit.currentCategoryIndex];
-        local currentTest = currentCategory.tests[wowUnit.currentTestIndex];
 
+    local currentCategory = wowUnit.currentTests[wowUnit.currentCategoryIndex];
+    local currentTest = currentCategory.tests[wowUnit.currentTestIndex];
+    if (message ~= nil) then
         currentTest.result = currentTest.result..NEGATIVE.." |cffff0000"..message.."|r\n";
+    else
+        currentTest.result = currentTest.result..NEGATIVE.."\n";
     end
 end
 

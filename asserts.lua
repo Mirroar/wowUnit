@@ -94,3 +94,11 @@ function wowUnit:isNil(value, message)
         wowUnit:CurrentTestFailed(message);
     end
 end
+
+function wowUnit:isFunction(value, message)
+    if (type(value) == "function") then 
+        wowUnit:CurrentTestSucceeded(message);
+    else
+        wowUnit:CurrentTestFailed(message);
+    end
+end
