@@ -102,6 +102,12 @@ function wowUnit:ResetAllTestingData()
     wowUnit.testTimeout = nil;
     wowUnit.testPaused = false;
     wowUnit.currentTestID = 0;
+
+    local i = 1;
+    while (_G["wowUnitTestCategory"..i]) do
+        _G["wowUnitTestCategory"..i]:Hide();
+        i = i + 1;
+    end
 end
 
 function wowUnit:PrepareCategoryForTesting(testCategoryTitle, testCategoryTable)

@@ -74,6 +74,7 @@ function wowUnit.UI:AddTestCategory()
 
     categoryFrame.NameText:SetText(currentCategory.title);
     categoryFrame.testCategory = currentCategory;
+    categoryFrame:Show();
     wowUnit.UI:UpdateTestCategoryFrame(categoryFrame);
 end
 
@@ -166,6 +167,13 @@ function wowUnit.UI:UpdateTestCategoryFrame(statGroup)
         statGroup.BgBottom:SetHeight(totalHeight - 2);
     else
         statGroup.BgBottom:SetHeight(46);
+    end
+
+    -- hide extra statframes from old testing
+    i = #currentCategory.tests + 1;
+    while (_G[statGroup:GetName().."Test"..i]) do
+        _G[statGroup:GetName().."Test"..i]:Hide();
+        i = i + 1;
     end
 end
 
