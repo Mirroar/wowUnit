@@ -141,7 +141,6 @@ function wowUnit.UI:UpdateTestCategoryFrame(statGroup)
         end
         
         _G[statFrame:GetName().."Label"]:SetText(currentCategory.tests[i].title);
-        --_G[statFrame:GetName().."StatText"]:SetText(--[[TODO]]"");
         statFrame:Show();
         statFrame.test = currentCategory.tests[i];
         statFrame.parentCategory = statGroup;
@@ -182,12 +181,10 @@ function wowUnit.UI:ToggleTestFrame(frame)
         if not frame.resultString then
             frame.resultString = frame:CreateFontString(nil, "MEDIUM", "GameFontHighlightSmall");
             frame.resultString:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, -frame.startingHeight);
-            --frame.resultString:SetPoint("LEFT");
             frame.resultString:SetPoint("RIGHT");
             frame.resultString:SetWidth(frame:GetWidth());
             frame.resultString:SetJustifyH("LEFT");
             frame.resultString:SetJustifyV("TOP");
-            --frame.resultString:SetTextHeight(10);
             frame.resultString:SetWordWrap(true);
         end
 
