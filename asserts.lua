@@ -19,6 +19,14 @@ function wowUnit:assertEquals(value1, value2, message)
     end
 end
 
+function wowUnit:assertNonEquals(value1, value2, message)
+    if (value1 ~= value2) then
+        wowUnit:CurrentTestSucceeded(message);
+    else
+        wowUnit:CurrentTestFailed(message);
+    end
+end
+
 function wowUnit:assertSame(value1, value2, message)
     if (type(value1) == "table" and type(value2) == "table") then
         if (wowUnit:DeepEquals(value1, value2)) then

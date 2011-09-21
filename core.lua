@@ -71,7 +71,7 @@ function wowUnit:IterateTestSuiteCategories(testTable)
     end
     
     wowUnit:ResetAllTestingData();
-    for testCategoryTitle, testCategoryTable in pairs(testTable.tests) do
+    for testCategoryTitle, testCategoryTable in orderedPairs(testTable.tests) do
         wowUnit:PrepareCategoryForTesting(testCategoryTitle, testCategoryTable);
     end
     
@@ -126,7 +126,7 @@ end
 
 function wowUnit:PrepareTestsTable(testCategoryTable)
     local testsTable = {};
-    for testTitle, testFunc in pairs(testCategoryTable) do
+    for testTitle, testFunc in orderedPairs(testCategoryTable) do
         if (testTitle ~= "setup" and testTitle ~= "teardown") then
             tinsert(testsTable, {
                 title = testTitle,

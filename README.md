@@ -137,6 +137,21 @@ contents are the same.
 (optional) This message will be displayed in the test window to indicate which
 tests passed or failed.
 
+wowUnit:assertNonEquals(value1, value2, message)
+---------------------------------------------
+
+#### value1, value2
+This test will pass if and only if value1 is not deemed equal to value2 in an _if 
+(value1 ~= value2) then ..._ statement.
+
+Note: Lua does not do automatic type conversion here, so _1_ and _"1"_ are not
+equal.
+
+#### message
+(optional) This message will be displayed in the test window to indicate which
+tests passed or failed.
+
+
 wowUnit:assertSame(value1, value2, message)
 -------------------------------------------
 
@@ -236,14 +251,20 @@ Example:
 		local timeFrame = CreateFrame("Frame");
 		timeFrame:SetScript("OnUpdate", function(self, elapsed)
 			timeElapsed = timeElapsed + elapsed;
-
+			
+			-- How many seconds you want to block
 			if (timeElapsed > 5) then
 				timeFrame:SetScript("OnUpdate", nil);	-- don't forget to remove checks like this, otherwise you might be spamming asserts every frame
+				
+				-- Code to check the results
 				wowUnit:assert(myAddon.processCompleted, "all done");
+				
+				-- Code to release block
 				wowUnit:resumeTesting(testID);
 			end
 		end)
 
+		-- Code you want to run
 		myAddon:StartProcess();
 	end
 
