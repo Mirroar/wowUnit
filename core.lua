@@ -26,10 +26,10 @@ function wowUnit:RegisterChatCommands()
     SLASH_wowUnit2 = "/wowunit";
     SLASH_wowUnit3 = "/wu";
     SLASH_wowUnit4 = "/unittest";
-    
+
     function SlashCmdList.wowUnit(message, editBox)
         local command, rest = message:match("^(%S*)%s*(.-)$");
-        
+
         if (command == "whatever") then
             --TODO: remove this unless there is a reasonable command to add, like 'config'
         else
@@ -69,12 +69,12 @@ function wowUnit:IterateTestSuiteCategories(testTable)
         wowUnit:Print("No tests found.");
         return;
     end
-    
+
     wowUnit:ResetAllTestingData();
     for testCategoryTitle, testCategoryTable in orderedPairs(testTable.tests) do
         wowUnit:PrepareCategoryForTesting(testCategoryTitle, testCategoryTable);
     end
-    
+
     wowUnit:RunCurrentTests()
 end
 
@@ -141,7 +141,7 @@ end
 function wowUnit:RunCurrentTests()
     wowUnit.mainFrame:SetScript("OnUpdate", wowUnit.TestIteration);
     wowUnit.mainFrame:Show();
-    
+
     wowUnit.testsAreRunning = true;
 end
 
@@ -243,7 +243,7 @@ function wowUnit:CompleteTestCategory()
 end
 
 function wowUnit:RunCurrentTest()
-    wowUnit:Print("RunCurrentTest", wowUnit.currentCategoryIndex, wowUnit.currentTestIndex);
+    --wowUnit:Print("RunCurrentTest", wowUnit.currentCategoryIndex, wowUnit.currentTestIndex);
     local currentCategory = wowUnit.currentTests[wowUnit.currentCategoryIndex];
     if (not currentCategory) then return; end
 
@@ -266,7 +266,7 @@ function wowUnit:RunTestCategoryTests(testCategoryTable)
         wowUnit:Print("    No Tests defined.");
         return;
     end
-    
+
     for testName, testfunc in pairs(testCategoryTable) do
         wowUnit:PrepareTest();
     end
