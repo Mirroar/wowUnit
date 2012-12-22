@@ -10,7 +10,8 @@
 ## Notes: A unit testing framework for LUA Addon developers.
 
 template.xml
-
+	
+external_functions.lua
 core.lua
 frame.lua
 asserts.lua
