@@ -191,6 +191,7 @@ wowUnit.tests = {
     },
     ["Setup and Teardown"] = {
         setup = function()
+            wowUnit:Print("setup");
             wowUnit.__setupTest = 3;
             wowUnit.__oldStartTests = wowUnit.StartTests;
             function iMnotafunction()
@@ -201,6 +202,7 @@ wowUnit.tests = {
             end
         end,
         teardown = function()
+            wowUnit:Print("teardown");
             wowUnit.__setupTest = nil;
             wowUnit.StartTests = wowUnit.__oldStartTests;
             iMnotafunction = nil;
@@ -209,6 +211,7 @@ wowUnit.tests = {
             wowUnit:assertEquals(wowUnit.__setupTest, 3, "Setup is working");
         end,
         ["mocking a function"] = function()
+            wowUnit:Print("mock");
             wowUnit:expect(2);
             iMnotafunction();
             wowUnit:StartTests();
