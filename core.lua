@@ -17,7 +17,7 @@ function wowUnit:eventHandler(event, arg1, ...)
     if (event == "ADDON_LOADED" and arg1 == addonName) then
         wowUnit.UI:InitializeUI()
         wowUnit:RegisterChatCommands()
-        wowUnit:StartAutoTestsOnLogin()
+        --wowUnit:StartAutoTestsOnLogin()
 
         if #wowUnit.startUpTests > 0 then
             -- some tests have been queued before we were ready, execute those now
@@ -151,14 +151,20 @@ function wowUnit:PrepareTestsTable(testCategoryTable)
     return testsTable
 end
 
+local lastUpdateTime = nil
 function wowUnit:RunCurrentTests()
-    wowUnit.mainFrame:SetScript("OnUpdate", wowUnit.TestIteration)
+    wowUnit.testsTicker = C_Timer.NewTicker(0.01, wowUnit.TestIteration)
     wowUnit.mainFrame:Show()
+    lastUpdateTime = GetTime()
 
     wowUnit.testsAreRunning = true
 end
 
 function wowUnit:TestIteration(elapsedTime)
+    if not elapsedTime then
+        elapsedTime = GetTime() - lastUpdateTime
+    end
+    lastUpdateTime = GetTime()
     if (wowUnit.testPaused) then
         wowUnit.testTimeout = wowUnit.testTimeout - elapsedTime
         if (wowUnit.testTimeout < 0) then
@@ -267,7 +273,7 @@ function wowUnit:RunCurrentTest()
     wowUnit.currentTest = currentCategory.tests[wowUnit.currentTestIndex]
 
     if (wowUnit.currentTest) then
-        wowUnit:Print('running test', wowUnit.currentTest.title)
+        --wowUnit:Print('running test', wowUnit.currentTest.title)
         wowUnit.currentResult = { pcall(wowUnit.currentTest.func) }
     else
         wowUnit:SelectNextTest()
@@ -286,7 +292,9 @@ function wowUnit:RunTestCategoryTests(testCategoryTable)
 end
 
 function wowUnit:EndTesting()
-    wowUnit.mainFrame:SetScript("OnUpdate", nil)
+    wowUnit.testsTicker:Cancel()
+    wowUnit.testsTicker = nil
+    wowUnit.mainFrame:Show()
     wowUnit:PrintFinalTestResults()
     wowUnit.testsAreRunning = false
 end

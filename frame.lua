@@ -3,6 +3,7 @@ local mainFrame = wowUnit.mainFrame
 wowUnit.UI = {}
 
 function wowUnit.UI:InitializeUI()
+    wowUnit:Print("InitializeUI")
     if not wowUnit.interfaceInitialized then
         wowUnit.interfaceInitialized = true
 
@@ -29,7 +30,7 @@ function wowUnit.UI:InitializeUI()
         local titleRegion = mainFrame:CreateTitleRegion()
         titleRegion:SetAllPoints(mainFrame)
 
-        local closeButton = CreateFrame("Button", "wowUnitFrameCloseButton", mainFrame, "UIPanelCloseButton")
+        local closeButton = CreateFrame("Button", "$parentCloseButton", mainFrame, "UIPanelCloseButton")
         closeButton:SetWidth(30)
         closeButton:SetHeight(30)
         closeButton:SetPoint("TOPRIGHT", mainFrame, "TOPRIGHT", -4, -4)
