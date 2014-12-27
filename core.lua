@@ -1,10 +1,10 @@
 --TODO: add auto-Test functionality (user can choose test suites to automatically run every reload)
 
-local addonName, addonTable = ...;
+local addonName, ns = ...;
 local POSITIVE = "|TInterface\\RAIDFRAME\\ReadyCheck-Ready:0|t";
 local NEGATIVE = "|TInterface\\RAIDFRAME\\ReadyCheck-NotReady:0|t";
 
-wowUnit = addonTable;
+wowUnit = ns;
 
 wowUnit.mainFrame = CreateFrame("Frame", "wowUnitFrame", UIParent);
 wowUnit.mainFrame:RegisterEvent("ADDON_LOADED");
@@ -30,15 +30,11 @@ function wowUnit:RegisterChatCommands()
     function SlashCmdList.wowUnit(message, editBox)
         local command, rest = message:match("^(%S*)%s*(.-)$");
 
-        if (command == "whatever") then
-            --TODO: remove this unless there is a reasonable command to add, like 'config'
+        if _G[command] then
+            wowUnit:SetCurrentTestSuiteName(command);
+            wowUnit:StartTests(_G[command]);
         else
-            if _G[command] then
-                wowUnit:SetCurrentTestSuiteName(command);
-                wowUnit:StartTests(_G[command]);
-            else
-                wowUnit:Print("Test suite "..(command or "").." not found.");
-            end
+            wowUnit:Print("Test suite "..(command or "").." not found.");
         end
     end
 end
