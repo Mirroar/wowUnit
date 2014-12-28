@@ -103,6 +103,18 @@ function wowUnit:isNil(value, message)
     end
 end
 
+function wowUnit:isEmpty(value, message)
+    if (type(value) == "table") then
+        for _, _ in pairs(value) do
+            wowUnit:CurrentTestFailed(message)
+            return
+        end
+        wowUnit:CurrentTestSucceeded(message)
+    else
+        wowUnit:isNil(value, message)
+    end
+end
+
 function wowUnit:isFunction(value, message)
     if (type(value) == "function") then
         wowUnit:CurrentTestSucceeded(message)
