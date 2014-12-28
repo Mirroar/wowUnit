@@ -1,4 +1,4 @@
-## Interface: 50100
+## Interface: 60000
 ## Dependencies:
 ## OptionalDeps:
 ## SavedVariables:
@@ -6,7 +6,7 @@
 
 ## Title: wowUnit
 ## Author: Mirroar
-## Version: 5.1v1
+## Version: 6.0v1
 ## Notes: A unit testing framework for LUA Addon developers.
 
 template.xml
