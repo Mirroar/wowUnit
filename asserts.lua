@@ -15,7 +15,7 @@ function wowUnit:assertEquals(value1, value2, message)
     if (value1 == value2) then
         wowUnit:CurrentTestSucceeded(message)
     else
-        wowUnit:CurrentTestFailed(message)
+        wowUnit:CurrentTestFailed(message..' ('..tostringall(value2)..' expected, got '..tostringall(value1)..')')
     end
 end
 

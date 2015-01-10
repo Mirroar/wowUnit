@@ -136,8 +136,8 @@ wowUnit.tests = {
                 frameCount = frameCount - 1
                 if (frameCount <= 0) then
                     testFrame:SetScript("OnUpdate", nil)
-                    wowUnit:assert(true, "Asynch function terminated 1")
                     wowUnit:resumeTesting(testID)
+                    wowUnit:assert(true, "Asynch function terminated 1")
                 end
             end)
         end,
@@ -151,8 +151,8 @@ wowUnit.tests = {
                 frameCount = frameCount - elapsed
                 if (frameCount <= 0) then
                     testFrame:SetScript("OnUpdate", nil)
-                    wowUnit:assert(true, "Asynch function terminated 2")
                     wowUnit:resumeTesting(testID)
+                    wowUnit:assert(true, "Asynch function terminated 2")
                 end
             end)
         end,
@@ -167,8 +167,8 @@ wowUnit.tests = {
                 frameCount = frameCount - elapsed
                 if (frameCount <= 0) then
                     testFrame:SetScript("OnUpdate", nil)
-                    wowUnit:assert(true, "Asynch function terminated 3")
                     wowUnit:resumeTesting(testID)
+                    wowUnit:assert(true, "Asynch function terminated 3")
                 end
             end)
         end,
@@ -183,8 +183,8 @@ wowUnit.tests = {
                 frameCount = frameCount - elapsed
                 if (frameCount <= 0) then
                     testFrame:SetScript("OnUpdate", nil)
-                    wowUnit:assert(true, "Asynch function terminated 4")
                     wowUnit:resumeTesting(testID)
+                    wowUnit:assert(true, "Asynch function terminated 4")
                 end
             end)
         end
@@ -210,11 +210,23 @@ wowUnit.tests = {
         ["Check if setupped variable is correct"] = function()
             wowUnit:assertEquals(wowUnit.__setupTest, 3, "Setup is working")
         end,
-        ["mocking a function"] = function()
+        ["mocking a function the untidy way"] = function()
             wowUnit:Print("mock")
             wowUnit:expect(2)
             iMnotafunction()
             wowUnit:StartTests()
         end
-    }
+    },
+    ["Mocking"] = {
+        mock = {
+            UnitName = function(unit)
+                wowUnit:assert(true, "Mocked UnitName function was called.")
+                return "Pan-Galactic Gargle Blaster"
+            end
+        },
+        ["Check mocked function"] = function()
+            wowUnit:assertEquals(UnitName('player'), "Pan-Galactic Gargle Blaster", "Our mocked function was called and returned the correct value")
+            wowUnit:expect(2)
+        end
+    },
 }

@@ -134,13 +134,16 @@ function wowUnit:PrepareCategoryForTesting(testCategoryTitle, testCategoryTable)
     if (testCategoryTable.teardown and type(testCategoryTable.teardown) == "function") then
         tempTable.teardown = testCategoryTable.teardown
     end
+    if (testCategoryTable.mock and type(testCategoryTable.mock) == "table") then
+        tempTable.mock = testCategoryTable.mock
+    end
     tinsert(wowUnit.currentTests, tempTable)
 end
 
 function wowUnit:PrepareTestsTable(testCategoryTable)
     local testsTable = {}
     for testTitle, testFunc in orderedPairs(testCategoryTable) do
-        if (testTitle ~= "setup" and testTitle ~= "teardown") then
+        if testTitle ~= "setup" and testTitle ~= "teardown" and testTitle ~= "mock" then
             tinsert(testsTable, {
                 title = testTitle,
                 func = testFunc,
@@ -264,15 +267,26 @@ end
 function wowUnit:RunCurrentTest()
     --wowUnit:Print("RunCurrentTest", wowUnit.currentCategoryIndex, wowUnit.currentTestIndex)
     local currentCategory = wowUnit.currentTests[wowUnit.currentCategoryIndex]
-    if (not currentCategory) then return; end
+    if not currentCategory then return end
 
-    if (wowUnit.currentTestIndex == 1) then
+    if wowUnit.currentTestIndex == 1 then
         wowUnit.UI:AddTestCategory()
     end
 
     wowUnit.currentTest = currentCategory.tests[wowUnit.currentTestIndex]
 
     if (wowUnit.currentTest) then
+        -- tun test in a sandbox that falls back to the global table so data is available but not polluted as easily
+        local environment = currentCategory.mock or {}
+
+        local testID = wowUnit.currentTestIndex
+        local metaGlobal = {
+            __index = _G
+        }
+
+        setmetatable(environment, metaGlobal)
+        setfenv(wowUnit.currentTest.func, environment)
+
         --wowUnit:Print('running test', wowUnit.currentTest.title)
         wowUnit.currentResult = { pcall(wowUnit.currentTest.func) }
     else
@@ -306,25 +320,21 @@ end
 
 function wowUnit:SetupTest()
     local currentCategory = wowUnit.currentTests[wowUnit.currentCategoryIndex]
-    if (not currentCategory) then return; end
+    if not currentCategory or not currentCategory.setup then return end
 
-    if (currentCategory.setup and type (currentCategory.setup == "function")) then
-        local result = {pcall(currentCategory.setup)}
-        if not result[1] then
-            wowUnit:CurrentTestFailed("Setup Error: "..result[2])
-        end
+    local result = {pcall(currentCategory.setup)}
+    if not result[1] then
+        wowUnit:CurrentTestFailed("Setup Error: "..result[2])
     end
 end
 
 function wowUnit:TeardownTest()
     local currentCategory = wowUnit.currentTests[wowUnit.currentCategoryIndex]
-    if (not currentCategory) then return; end
+    if not currentCategory or not currentCategory.teardown then return end
 
-    if (currentCategory.teardown and type (currentCategory.teardown == "function")) then
-        local result = {pcall(currentCategory.teardown)}
-        if not result[1] then
-            wowUnit:CurrentTestFailed("Teardown Error: "..result[2])
-        end
+    local result = {pcall(currentCategory.teardown)}
+    if not result[1] then
+        wowUnit:CurrentTestFailed("Teardown Error: "..result[2])
     end
 end
 
@@ -341,13 +351,14 @@ end
 
 function wowUnit:resumeTesting(testID)
     if wowUnit.testPaused then
-        if (testID ~= nil) then
-            if (testID == wowUnit.currentTestID) then
+        if testID then
+            if testID == wowUnit.currentTestID then
                 wowUnit.testPaused = false
                 wowUnit.testTimeout = nil
                 wowUnit:CurrentTestSucceeded("testing resumed normally")
             else
                 -- wrong test ID, this is not the resume we're looking for
+                error('resumed wrong test')
             end
         else
             wowUnit.testPaused = false
@@ -369,6 +380,7 @@ end
 
 function wowUnit:CurrentTestSucceeded(message)
     if not wowUnit.testsAreRunning then return end
+
     wowUnit.currentTestSuiteResults.success = wowUnit.currentTestSuiteResults.success + 1
     wowUnit.currentTestCategoryResults.success = wowUnit.currentTestCategoryResults.success + 1
     wowUnit.currentTestResults.success = wowUnit.currentTestResults.success + 1
@@ -387,6 +399,7 @@ end
 
 function wowUnit:CurrentTestFailed(message)
     if not wowUnit.testsAreRunning then return end
+
     wowUnit.currentTestSuiteResults.failure = wowUnit.currentTestSuiteResults.failure + 1
     wowUnit.currentTestCategoryResults.failure = wowUnit.currentTestCategoryResults.failure + 1
     wowUnit.currentTestResults.failure = wowUnit.currentTestResults.failure + 1
