@@ -34,6 +34,7 @@ function wowUnit:RegisterChatCommands()
             --TODO: remove this unless there is a reasonable command to add, like 'config'
         else
             if _G[command] then
+				print("this is cmd: " ..command.. " Gcmd:")
                 wowUnit:SetCurrentTestSuiteName(command);
                 wowUnit:StartTests(_G[command]);
             else
