@@ -1,4 +1,5 @@
 local mainFrame = wowUnit.mainFrame;
+local largeResultsFrame
 
 wowUnit.UI = {};
 
@@ -9,7 +10,7 @@ function wowUnit.UI:InitializeUI()
         tinsert(UISpecialFrames, "wowUnitFrame");
         mainFrame:SetToplevel(true);
         mainFrame:ClearAllPoints();
-        mainFrame:SetPoint("CENTER");
+        mainFrame:SetPoint("LEFT");
         mainFrame:SetBackdrop({
             bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
             tileSize = 32,
@@ -39,7 +40,7 @@ function wowUnit.UI:InitializeUI()
         closeButton:SetWidth(30);
         closeButton:SetHeight(30);
         closeButton:SetPoint("TOPRIGHT", mainFrame, "TOPRIGHT", -4, -4);
-        closeButton:SetScript("OnClick", function(...) mainFrame:Hide(); end);
+        closeButton:SetScript("OnClick", function(...) mainFrame:Hide(); largeResultsFrame:Hide() end);
 
         local titleText = mainFrame:CreateFontString(nil, "BACKGROUND", "GameFontHighlight");
         titleText:SetPoint("TOP", mainFrame, "TOP", 0, -15);
@@ -183,7 +184,6 @@ function wowUnit.UI:UpdateTestCategoryFrame(statGroup)
     end
 end
 
-
 function wowUnit.UI:ToggleTestFrame(frame)
     if not frame.opened then
         if not frame.resultString then
@@ -200,7 +200,30 @@ function wowUnit.UI:ToggleTestFrame(frame)
         end
 
         frame.resultString:SetText(frame.test.result);
-		if string.len(frame.test.result) > 10000 then KPS:DebugMsg(frame.test.result) end
+		
+		
+		-- CreateFontString == Max 4000 chars, putting the results in a scrolling table instead
+		if string.len(frame.test.result) > 10000 then 
+			largeResultsFrame = AceGUI:Create("Frame")
+			largeResultsFrame:SetTitle("WoWUnit test results")
+			largeResultsFrame:SetStatusText("")
+			largeResultsFrame:SetCallback("OnClose", function(widget) AceGUI:Release(widget) end)
+			largeResultsFrame:SetLayout("Fill")
+			largeResultsFrame:SetWidth("460")
+			largeResultsFrame:SetHeight("460")
+			largeResultsFrame:ClearAllPoints();
+			largeResultsFrame:SetPoint("LEFT",UIParent,460,1);
+			
+			largeResultsFrame:ReleaseChildren() -- Refresh textbox
+   
+		   local editbox = AceGUI:Create("MultiLineEditBox")
+		   editbox:SetNumLines(10)
+		   editbox:SetText(frame.test.result)
+		   editbox:DisableButton(1)
+		   largeResultsFrame:AddChild(editbox)
+		end
+		
+		
         frame.resultString:Show();
         frame:SetHeight(frame.resultString:GetHeight() + frame.startingHeight);
 
@@ -208,6 +231,7 @@ function wowUnit.UI:ToggleTestFrame(frame)
     else
         frame.resultString:Hide();
         frame:SetHeight(frame.startingHeight);
+		if largeResultsFrame then largeResultsFrame:Hide(); end
 
         frame.opened = false;
     end
