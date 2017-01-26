@@ -65,6 +65,13 @@ wowUnit.tests = {
             wowUnit:isNil(1, "1 is not nil");
             wowUnit:isNil("a", "\"a\" is not nil");
             wowUnit:isNil({}, "{} is not nil");
+        end,
+        ["isFunction"] = function()
+            wowUnit:isFunction(nil, "nil is not a function");
+            wowUnit:isFunction(1, "1 is not a function");
+            wowUnit:isFunction("a", "\"a\" is not a function");
+            wowUnit:isFunction({}, "{} is not a function");
+            wowUnit:isFunction(wowUnit.assert, "wowUnit.assert is a function");
         end
     },
     ["Test expectations"] = {
@@ -198,6 +205,7 @@ wowUnit.tests = {
             wowUnit:Print("teardown");
             wowUnit.__setupTest = nil;
             wowUnit.StartTests = wowUnit.__oldStartTests;
+            iMnotafunction = nil;
         end,
         ["Check if setupped variable is correct"] = function()
             wowUnit:assertEquals(wowUnit.__setupTest, 3, "Setup is working");

@@ -26,6 +26,8 @@ function wowUnit.UI:InitializeUI()
         mainFrame:SetHeight(460);
         mainFrame:SetWidth(460);
         mainFrame:EnableMouse(true);
+        --local titleRegion = mainFrame:CreateTitleRegion();
+        --titleRegion:SetAllPoints(mainFrame);
 		mainFrame:SetMovable(true)
 		mainFrame:RegisterForDrag("LeftButton")
 		mainFrame:SetScript("OnDragStart", mainFrame.StartMoving)

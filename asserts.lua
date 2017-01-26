@@ -19,7 +19,6 @@ function wowUnit:assertEquals(value1, value2, message)
     else
 		message = message.." - Got '"..tostring(value1).."' Expected: '"..tostring(value2).."'"
         wowUnit:CurrentTestFailed(message);
-		print(message)
     end
 end
 
