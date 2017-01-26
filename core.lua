@@ -34,6 +34,7 @@ function wowUnit:RegisterChatCommands()
             --TODO: remove this unless there is a reasonable command to add, like 'config'
         else
             if _G[command] then
+				print("this is cmd: " ..command.. " Gcmd:")
                 wowUnit:SetCurrentTestSuiteName(command);
                 wowUnit:StartTests(_G[command]);
             else
@@ -47,7 +48,6 @@ function wowUnit:SetCurrentTestSuiteName(name)
     wowUnit.testSuiteName = name;
     wowUnit.UI:SetTestSuiteName();
 end
-
 function wowUnit:StartTests(testTable)
     if type(testTable) ~= "table" then
         wowUnit:Print("Invalid test suite supplied: Object is not a table.");
@@ -71,7 +71,7 @@ function wowUnit:IterateTestSuiteCategories(testTable)
     end
     
     wowUnit:ResetAllTestingData();
-    for testCategoryTitle, testCategoryTable in pairs(testTable.tests) do
+    for testCategoryTitle, testCategoryTable in orderedPairs(testTable.tests) do
         wowUnit:PrepareCategoryForTesting(testCategoryTitle, testCategoryTable);
     end
     
@@ -102,6 +102,12 @@ function wowUnit:ResetAllTestingData()
     wowUnit.testTimeout = nil;
     wowUnit.testPaused = false;
     wowUnit.currentTestID = 0;
+
+    local i = 1;
+    while (_G["wowUnitTestCategory"..i]) do
+        _G["wowUnitTestCategory"..i]:Hide();
+        i = i + 1;
+    end
 end
 
 function wowUnit:PrepareCategoryForTesting(testCategoryTitle, testCategoryTable)
@@ -120,7 +126,7 @@ end
 
 function wowUnit:PrepareTestsTable(testCategoryTable)
     local testsTable = {};
-    for testTitle, testFunc in pairs(testCategoryTable) do
+    for testTitle, testFunc in orderedPairs(testCategoryTable) do
         if (testTitle ~= "setup" and testTitle ~= "teardown") then
             tinsert(testsTable, {
                 title = testTitle,
@@ -181,6 +187,7 @@ function wowUnit:CompleteTest()
     end
     resultString = resultString.." |cff00ff00"..wowUnit.currentTestResults.success.."|r";
     resultString = resultString.."/|cffff0000"..wowUnit.currentTestResults.failure.."|r";
+
     if (wowUnit.currentTestResults.expect == nil) then
         resultString = resultString.."/"..wowUnit.currentTestResults.total;
     else
@@ -348,11 +355,13 @@ function wowUnit:CurrentTestSucceeded(message)
     wowUnit.currentTestSuiteResults.total = wowUnit.currentTestSuiteResults.total + 1;
     wowUnit.currentTestCategoryResults.total = wowUnit.currentTestCategoryResults.total + 1;
     wowUnit.currentTestResults.total = wowUnit.currentTestResults.total + 1;
-    if (message ~= nil) then
-        local currentCategory = wowUnit.currentTests[wowUnit.currentCategoryIndex];
-        local currentTest = currentCategory.tests[wowUnit.currentTestIndex];
 
+    local currentCategory = wowUnit.currentTests[wowUnit.currentCategoryIndex];
+    local currentTest = currentCategory.tests[wowUnit.currentTestIndex];
+    if (message ~= nil) then
         currentTest.result = currentTest.result..POSITIVE.." |cff00ff00"..message.."|r\n";
+    else
+        currentTest.result = currentTest.result..POSITIVE.."\n";
     end
 end
 
@@ -364,11 +373,13 @@ function wowUnit:CurrentTestFailed(message)
     wowUnit.currentTestSuiteResults.total = wowUnit.currentTestSuiteResults.total + 1;
     wowUnit.currentTestCategoryResults.total = wowUnit.currentTestCategoryResults.total + 1;
     wowUnit.currentTestResults.total = wowUnit.currentTestResults.total + 1;
-    if (message ~= nil) then
-        local currentCategory = wowUnit.currentTests[wowUnit.currentCategoryIndex];
-        local currentTest = currentCategory.tests[wowUnit.currentTestIndex];
 
+    local currentCategory = wowUnit.currentTests[wowUnit.currentCategoryIndex];
+    local currentTest = currentCategory.tests[wowUnit.currentTestIndex];
+    if (message ~= nil) then
         currentTest.result = currentTest.result..NEGATIVE.." |cffff0000"..message.."|r\n";
+    else
+        currentTest.result = currentTest.result..NEGATIVE.."\n";
     end
 end
 

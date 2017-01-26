@@ -1,16 +1,17 @@
-## Interface: 40100
+## Interface: 70100
 ## Dependencies: 
 ## OptionalDeps: 
 ## SavedVariables: 
 ## SavedVariablesPerCharacter: 
 
 ## Title: wowUnit
-## Author: Mirroar
+## Author: Mirroar / Fulgerul (Contributor)
 ## Version: 4.1v1
 ## Notes: A unit testing framework for LUA Addon developers.
 
 template.xml
-
+	
+external_functions.lua
 core.lua
 frame.lua
 asserts.lua

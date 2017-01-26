@@ -24,10 +24,14 @@ function wowUnit.UI:InitializeUI()
             }
         });
         mainFrame:SetHeight(460);
-        mainFrame:SetWidth(344);
+        mainFrame:SetWidth(460);
         mainFrame:EnableMouse(true);
-        local titleRegion = mainFrame:CreateTitleRegion();
-        titleRegion:SetAllPoints(mainFrame);
+		mainFrame:SetMovable(true)
+		mainFrame:RegisterForDrag("LeftButton")
+		mainFrame:SetScript("OnDragStart", mainFrame.StartMoving)
+		mainFrame:SetScript("OnDragStop", mainFrame.StopMovingOrSizing)
+        --local titleRegion = mainFrame:CreateTitleRegion();
+        --titleRegion:SetAllPoints(mainFrame);
 
         local closeButton = CreateFrame("Button", "wowUnitFrameCloseButton", mainFrame, "UIPanelCloseButton");
         closeButton:SetWidth(30);
@@ -74,6 +78,7 @@ function wowUnit.UI:AddTestCategory()
 
     categoryFrame.NameText:SetText(currentCategory.title);
     categoryFrame.testCategory = currentCategory;
+    categoryFrame:Show();
     wowUnit.UI:UpdateTestCategoryFrame(categoryFrame);
 end
 
@@ -167,7 +172,15 @@ function wowUnit.UI:UpdateTestCategoryFrame(statGroup)
     else
         statGroup.BgBottom:SetHeight(46);
     end
+
+    -- hide extra statframes from old testing
+    i = #currentCategory.tests + 1;
+    while (_G[statGroup:GetName().."Test"..i]) do
+        _G[statGroup:GetName().."Test"..i]:Hide();
+        i = i + 1;
+    end
 end
+
 
 function wowUnit.UI:ToggleTestFrame(frame)
     if not frame.opened then
@@ -181,9 +194,11 @@ function wowUnit.UI:ToggleTestFrame(frame)
             frame.resultString:SetJustifyV("TOP");
             --frame.resultString:SetTextHeight(10);
             frame.resultString:SetWordWrap(true);
+
         end
 
         frame.resultString:SetText(frame.test.result);
+		if string.len(frame.test.result) > 10000 then KPS:DebugMsg(frame.test.result) end
         frame.resultString:Show();
         frame:SetHeight(frame.resultString:GetHeight() + frame.startingHeight);
 
