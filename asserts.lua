@@ -4,41 +4,50 @@ function wowUnit:expect(numTests)
 end
 
 function wowUnit:assert(value, message)
+
+	value = tostring(value)
+	
     if (value) then
         wowUnit:CurrentTestSucceeded(message);
     else
-		message = message.." - Expected: 'a true value'"
-        wowUnit:CurrentTestFailed(message);
-		print(message)
+        wowUnit:CurrentTestFailed(message.." Expected: true");
     end
 end
 
 function wowUnit:assertEquals(value1, value2, message)
+	
+	value1 = tostring(value1)
+	value2 = tostring(value2)
+	
     if (value1 == value2) then
-        wowUnit:CurrentTestSucceeded(message);
+        wowUnit:CurrentTestSucceeded(message..string.format("\n     Got: '%s' Expected: '%s'",value1,value2) );
     else
-		message = message.." - Got '"..tostring(value1).."' Expected: '"..tostring(value2).."'"
-        wowUnit:CurrentTestFailed(message);
+        wowUnit:CurrentTestFailed(message..string.format("\n     Got: '%s' Expected: '%s'",value1,value2) );
     end
 end
 
 function wowUnit:assertNonEquals(value1, value2, message)
+
+	value1 = tostring(value1)
+	value2 = tostring(value2)
+	
     if (value1 ~= value2) then
-        wowUnit:CurrentTestSucceeded(message);
+        wowUnit:CurrentTestSucceeded(message..string.format("\n     Got: '%s' Expected: '%s'",value1,value2) );
     else
-		message = message.." - Got '"..tostring(value1).."' Expected: '"..tostring(value2).."'"
-        wowUnit:CurrentTestFailed(message);
-		print(message)
+        wowUnit:CurrentTestFailed(message..string.format("\n     Got: '%s' Expected: '%s'",value1,value2) );
     end
 end
 
 function wowUnit:assertSame(value1, value2, message)
+	
     if (type(value1) == "table" and type(value2) == "table") then
         if (wowUnit:DeepEquals(value1, value2)) then
             wowUnit:CurrentTestSucceeded(message);
         else
-			message = message.." - Got '"..tostring(value1).."' Expected: '"..tostring(value2).."'"
-			wowUnit:CurrentTestFailed(message);
+			value1 = tostring(value1)
+			value2 = tostring(value2)
+	
+			wowUnit:CurrentTestFailed(message..string.format("\n     Got: '%s' Expected: '%s'",value1,value2) );
         end
     else
         wowUnit:assertEquals(value1, value2, message);
@@ -78,20 +87,20 @@ function wowUnit:DeepEquals(table1, table2)
 end
 
 function wowUnit:isTable(value, message)
+	
     if (type(value) == "table")then
         wowUnit:CurrentTestSucceeded(message);
     else
-		message = message.." - Got '"..type(value).."' Expected: 'table'"
-        wowUnit:CurrentTestFailed(message);
+        wowUnit:CurrentTestFailed(message..string.format("\n     Got: '%s' Expected: 'table'",type(value)))
     end
 end
 
 function wowUnit:isString(value, message)
+
     if (type(value) == "string") then
         wowUnit:CurrentTestSucceeded(message);
     else
-		message = message.." - Got '"..type(value).."' Expected: 'string'"
-        wowUnit:CurrentTestFailed(message);
+        wowUnit:CurrentTestFailed(message..string.format("\n     Got: '%s' Expected: 'table'",type(value)))
     end
 end
 
@@ -99,8 +108,7 @@ function wowUnit:isNumber(value, message)
     if (type(value) == "number") then
         wowUnit:CurrentTestSucceeded(message);
     else
-		message = message.." - Got '"..type(value).."' Expected: 'number'"
-        wowUnit:CurrentTestFailed(message);
+        wowUnit:CurrentTestFailed(message..string.format("\n     Got: '%s' Expected: 'table'",type(value)))
     end
 end
 
@@ -108,9 +116,7 @@ function wowUnit:isNil(value, message)
     if (type(value) == "nil") then 
         wowUnit:CurrentTestSucceeded(message);
     else
-		message = message.."' Expected: 'nil'"
-        wowUnit:CurrentTestFailed(message);
-		print(message)
+        wowUnit:CurrentTestFailed(message..string.format("\n     Got: '%s' Expected: 'nil'",value))
     end
 end
 
@@ -118,7 +124,6 @@ function wowUnit:isFunction(value, message)
     if (type(value) == "function") then 
         wowUnit:CurrentTestSucceeded(message);
     else
-		message = message.." - Got '"..type(value).."' Expected: 'function'"
-        wowUnit:CurrentTestFailed(message);
+        wowUnit:CurrentTestFailed(message..string.format("\n     Got: '%s' Expected: 'function'",type(value)));
     end
 end

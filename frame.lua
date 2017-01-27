@@ -27,8 +27,6 @@ function wowUnit.UI:InitializeUI()
         mainFrame:SetHeight(460);
         mainFrame:SetWidth(460);
         mainFrame:EnableMouse(true);
-        --local titleRegion = mainFrame:CreateTitleRegion();
-        --titleRegion:SetAllPoints(mainFrame);
 		mainFrame:SetMovable(true)
 		mainFrame:RegisterForDrag("LeftButton")
 		mainFrame:SetScript("OnDragStart", mainFrame.StartMoving)
@@ -40,7 +38,7 @@ function wowUnit.UI:InitializeUI()
         closeButton:SetWidth(30);
         closeButton:SetHeight(30);
         closeButton:SetPoint("TOPRIGHT", mainFrame, "TOPRIGHT", -4, -4);
-        closeButton:SetScript("OnClick", function(...) mainFrame:Hide(); largeResultsFrame:Hide() end);
+        closeButton:SetScript("OnClick", function(...) mainFrame:Hide(); end);
 
         local titleText = mainFrame:CreateFontString(nil, "BACKGROUND", "GameFontHighlight");
         titleText:SetPoint("TOP", mainFrame, "TOP", 0, -15);
@@ -201,33 +199,37 @@ function wowUnit.UI:ToggleTestFrame(frame)
 
         frame.resultString:SetText(frame.test.result);
 		
+		frame.resultString:Show();
+		frame:SetHeight(frame.resultString:GetHeight() + frame.startingHeight);
+
+		frame.opened = true;
 		
 		-- CreateFontString == Max 4000 chars, putting the results in a scrolling table instead
-		if string.len(frame.test.result) > 10000 then 
+		if string.len(frame.test.result) > 10000 and frame.opened then 
 			largeResultsFrame = AceGUI:Create("Frame")
 			largeResultsFrame:SetTitle("WoWUnit test results")
 			largeResultsFrame:SetStatusText("")
-			largeResultsFrame:SetCallback("OnClose", function(widget) AceGUI:Release(widget) end)
+			largeResultsFrame:SetCallback("OnClose", function(widget) AceGUI:Release(widget)  mainFrame:Show() end)
 			largeResultsFrame:SetLayout("Fill")
-			largeResultsFrame:SetWidth("460")
+			largeResultsFrame:SetWidth("660")
 			largeResultsFrame:SetHeight("460")
 			largeResultsFrame:ClearAllPoints();
-			largeResultsFrame:SetPoint("LEFT",UIParent,460,1);
-			
+			largeResultsFrame:SetPoint("LEFT",mainFrame,460);
+
 			largeResultsFrame:ReleaseChildren() -- Refresh textbox
-   
-		   local editbox = AceGUI:Create("MultiLineEditBox")
-		   editbox:SetNumLines(10)
-		   editbox:SetText(frame.test.result)
-		   editbox:DisableButton(1)
-		   largeResultsFrame:AddChild(editbox)
+
+
+			local editbox = AceGUI:Create("MultiLineEditBox")
+			editbox:SetNumLines(10)
+			editbox:SetText(frame.test.result)
+			editbox:DisableButton(1)
+			largeResultsFrame:AddChild(editbox)
+
+			mainFrame:Hide()
 		end
 		
 		
-        frame.resultString:Show();
-        frame:SetHeight(frame.resultString:GetHeight() + frame.startingHeight);
-
-        frame.opened = true;
+		
     else
         frame.resultString:Hide();
         frame:SetHeight(frame.startingHeight);
