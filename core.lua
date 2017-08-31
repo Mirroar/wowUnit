@@ -1,5 +1,24 @@
 --TODO: add auto-Test functionality (user can choose test suites to automatically run every reload)
 
+do	-- string.format prints nils now: %s -> %t
+local format = string.format
+	function strF(str, ...)
+	  local args = {...}
+	  local boolargs = {}
+	  str = str:gsub("%%t", "%%%%t")
+	  for i = #args, 1, -1 do
+		--if type(args[i]) == "boolean" or  type(args[i]) == "nil" then
+		  table.insert(boolargs, 1, args[i])
+		--table.remove(args, i)
+		--end
+	  end
+	  str = format(str, unpack(args))
+
+	  local j = 0
+	  return (str:gsub("%%t", function(spec) j = j + 1; return tostring(boolargs[j]) end))
+	end
+end
+
 local addonName, addonTable = ...;
 local POSITIVE = "|TInterface\\RAIDFRAME\\ReadyCheck-Ready:0|t";
 local NEGATIVE = "|TInterface\\RAIDFRAME\\ReadyCheck-NotReady:0|t";
@@ -256,8 +275,12 @@ function wowUnit:RunCurrentTest()
 
     if (wowUnit.currentTest) then
         wowUnit:Print('running test', wowUnit.currentTest.title);
-        wowUnit.currentResult = { pcall(wowUnit.currentTest.func) };
-    else
+        -- wowUnit.currentResult = { pcall(wowUnit.currentTest.func) , };
+		 
+		wowUnit.currentResult = { xpcall(wowUnit.currentTest.func, function(err) return debugstack(2,20,20)  end) , };
+		
+  
+	else
         wowUnit:SelectNextTest();
     end
 end
@@ -291,7 +314,7 @@ function wowUnit:SetupTest()
     if (currentCategory.setup and type (currentCategory.setup == "function")) then
         local result = {pcall(currentCategory.setup)};
         if not result[1] then
-            wowUnit:CurrentTestFailed("Setup Error: "..result[2]);
+            wowUnit:CurrentTestFailed("Setup Error: "..result[2]..debugstack(2, 3, 2));
         end
     end
 end
@@ -303,7 +326,7 @@ function wowUnit:TeardownTest()
     if (currentCategory.teardown and type (currentCategory.teardown == "function")) then
         local result = {pcall(currentCategory.teardown)};
         if not result[1] then
-            wowUnit:CurrentTestFailed("Teardown Error: "..result[2]);
+            wowUnit:CurrentTestFailed("Teardown Error: "..result[2]..debugstack(2, 3, 2));
         end
     end
 end

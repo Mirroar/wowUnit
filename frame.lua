@@ -1,3 +1,4 @@
+
 local mainFrame = wowUnit.mainFrame;
 local largeResultsFrame
 
@@ -205,6 +206,7 @@ function wowUnit.UI:ToggleTestFrame(frame)
 		frame.opened = true;
 		
 		-- CreateFontString == Max 4000 chars, putting the results in a scrolling table instead
+        AceGUI = LibStub("AceGUI-3.0")
 		if string.len(frame.test.result) > 10000 and frame.opened then 
 			largeResultsFrame = AceGUI:Create("Frame")
 			largeResultsFrame:SetTitle("WoWUnit test results")
@@ -214,7 +216,7 @@ function wowUnit.UI:ToggleTestFrame(frame)
 			largeResultsFrame:SetWidth("660")
 			largeResultsFrame:SetHeight("460")
 			largeResultsFrame:ClearAllPoints();
-			largeResultsFrame:SetPoint("LEFT",mainFrame,460);
+			largeResultsFrame:SetPoint("TOPLEFT",mainFrame,460);
 
 			largeResultsFrame:ReleaseChildren() -- Refresh textbox
 
@@ -225,6 +227,10 @@ function wowUnit.UI:ToggleTestFrame(frame)
 			editbox:DisableButton(1)
 			largeResultsFrame:AddChild(editbox)
 
+			frame.resultString:Hide();
+			frame:SetHeight(frame.startingHeight);
+			frame.opened = false;
+		
 			mainFrame:Hide()
 		end
 		
